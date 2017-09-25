@@ -26,7 +26,7 @@ std::vector<ExprElem> Calculator::parseExpr(std::string expr) {
                 slowIndex = i+1;
                 parsedExpr.emplace_back( ExprElem(OperType(expr[i])));
             } else {
-                throw "Ejnye no! -->" + expr;
+                throw "Ejnye no! -->";
             }
         }
     }
@@ -34,10 +34,23 @@ std::vector<ExprElem> Calculator::parseExpr(std::string expr) {
     return std::vector<ExprElem>();
 }
 
+double Calculator::calculateExpr(std::vector<ExprElem>) {
+    return 0;
+}
+
 double Calculator::evaluate(std::string expr) {
     expr = eliminateSpaces(expr);
     //NEED TO HANDLE: not valid expr. eg: 5**3, 5.5.2+4
-    std::vector<ExprElem> parsedExpr = parseExpr(expr);
+    std::vector<ExprElem> parsedExpr;
+
+    try {
+        parsedExpr = parseExpr(expr);
+    }
+    catch (std::string e){
+        std::cout << e << expr << std::endl;
+    };
+
+    double result = calculateExpr(parsedExpr);
 
     return 0;
 }

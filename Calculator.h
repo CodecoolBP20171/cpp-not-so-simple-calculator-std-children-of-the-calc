@@ -14,6 +14,7 @@ private:
     std::string eliminateSpaces(std::string expr);
     std::vector<ExprElem> parseExpr(std::string expr);
     bool isValidOperator(char oper);
+    double calculateExpr(std::vector<ExprElem>);
 };
 
 
