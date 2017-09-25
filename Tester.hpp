@@ -1,6 +1,10 @@
 #ifndef CALCULATOR_TESTER_HPP
 #define CALCULATOR_TESTER_HPP
+
+#include <iostream>
 #include "Calculator.h"
+
+using namespace std;
 
 class Tester {
 public:
