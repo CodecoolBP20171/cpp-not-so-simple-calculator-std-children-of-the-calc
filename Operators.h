@@ -4,7 +4,7 @@
 
 class Operator {
 public:
-    virtual double doOperation(double a, double b) = 0;
+    virtual double doOperation(double a, double b){};
 
 };
 

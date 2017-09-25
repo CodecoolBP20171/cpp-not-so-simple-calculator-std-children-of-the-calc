@@ -4,7 +4,12 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
+#include "Operators.h"
 #include "ExprElem.h"
+
+typedef std::vector<ExprElem> expression;
+typedef std::map <OperType, Operator> opMap;
 
 class Calculator {
 public:
@@ -12,9 +17,10 @@ public:
 
 private:
     std::string eliminateSpaces(std::string expr);
-    std::vector<ExprElem> parseExpr(std::string expr);
+    expression parseExpr(std::string expr);
     bool isValidOperator(char oper);
-    double calculateExpr(std::vector<ExprElem>);
+    double calculateExpr(expression expr);
+    void reduceExprWithOperators(expression expr, opMap operatorMap);
 };
 
 
