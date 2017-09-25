@@ -18,19 +18,19 @@ bool Calculator::isValidOperator(char oper){
 
 std::vector<ExprElem> Calculator::parseExpr(std::string expr) {
     std::vector<ExprElem> parsedExpr;
-    int slowIndex = 0;
-    for (int i = 0; i < expr.size(); ++i) {
+    unsigned int slowIndex = 0;
+    for (unsigned int i = 0; i < expr.size(); ++i) {
         if ( !isdigit(expr[i]) && expr[i] !='.'){
             if (isValidOperator(expr[i])) {
-                parsedExpr.push_back( ExprElem( std::stod( expr.substr(slowIndex, i-slowIndex))));
+                parsedExpr.emplace_back( ExprElem( std::stod( expr.substr(slowIndex, i-slowIndex))));
                 slowIndex = i+1;
-                parsedExpr.push_back( ExprElem(OperType(expr[i])));
+                parsedExpr.emplace_back( ExprElem(OperType(expr[i])));
             } else {
                 throw "Ejnye no! -->" + expr;
             }
         }
     }
-    parsedExpr.push_back( ExprElem( std::stod( expr.substr(slowIndex))));
+    parsedExpr.emplace_back( ExprElem( std::stod( expr.substr(slowIndex))));
     return std::vector<ExprElem>();
 }
 
