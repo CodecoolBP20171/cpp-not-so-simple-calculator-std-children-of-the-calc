@@ -10,6 +10,8 @@
 #include "Operators.h"
 #include "ExprElem.h"
 
+const char SIGN_INDICATOR = 'z';
+
 typedef std::vector<ExprElem> expression;
 typedef std::map <OperType, Operator*> opMap;
 
@@ -24,6 +26,8 @@ private:
     double calculateExpr(expression expr);
     void reduceExprWithOperators(expression &expr, opMap operatorMap);
     std::string dealWithParentheses(std::string expr);
+    void replaceParenthesesWithResult(std::string &expr, unsigned long openIndex, long i);
+    long getMatchingParenIndex(std::string &expr, unsigned long openIndex);
 };
 
 

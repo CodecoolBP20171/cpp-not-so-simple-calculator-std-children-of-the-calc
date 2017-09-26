@@ -36,6 +36,9 @@ public:
         TestErroneousFormula_missingClosingBracket();
         TestErroneousFormula_missing_param();
 
+        //extras
+        TestNegativeNumbers();
+
         evaluateTestOutcomes();
     }
 
@@ -166,6 +169,12 @@ private:
         Calculator c;
         double result = c.evaluate("12+2*root25+10^4+6-3");
         checkResult(0, result);
+    }
+
+    void TestNegativeNumbers(){
+        Calculator c;
+        double result = c.evaluate("3+(-4)");
+        checkResult(-1, result);
     }
 
     void checkResult(const double expected, const double actual, const double threshold = 0.0d)
