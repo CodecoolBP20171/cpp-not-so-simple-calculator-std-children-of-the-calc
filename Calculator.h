@@ -9,7 +9,7 @@
 #include "ExprElem.h"
 
 typedef std::vector<ExprElem> expression;
-typedef std::map <OperType, Operator> opMap;
+typedef std::map <OperType, Operator*> opMap;
 
 class Calculator {
 public:
@@ -20,7 +20,7 @@ private:
     expression parseExpr(std::string expr);
     bool isValidOperator(char oper);
     double calculateExpr(expression expr);
-    void reduceExprWithOperators(expression expr, opMap operatorMap);
+    void reduceExprWithOperators(expression &expr, opMap operatorMap);
 };
 
 

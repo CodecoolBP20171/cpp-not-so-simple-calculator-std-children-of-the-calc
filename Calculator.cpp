@@ -31,28 +31,35 @@ expression Calculator::parseExpr(std::string expr) {
         }
     }
     parsedExpr.emplace_back(ExprElem(std::stod(expr.substr(slowIndex))));
-    return expression();
+
+    return parsedExpr;
 }
 
-void Calculator::reduceExprWithOperators(expression expr, opMap operatorMap) {
+void Calculator::reduceExprWithOperators(expression &expr, opMap operatorMap) {
     int i = 1;
     while (i < expr.size()) {
         if (operatorMap.find(expr[i].getOperation()) != operatorMap.end()) {
-            double tempResult = operatorMap[expr[i].getOperation()].doOperation(expr[i - 1].getValue(),
-                                                                                expr[i + 1].getValue());
-            expr.erase(expr.begin() + i - 1, expr.begin() + i + 1);
+
+            double tempResult;
+            OperType actualOper = expr[i].getOperation();
+            double firstValue = expr[i - 1].getValue();
+            double secondValue = expr[i + 1].getValue();
+            Operator *operObject = operatorMap[actualOper];
+            tempResult = operObject->doOperation(firstValue, secondValue);
+
+            expr.erase(expr.begin() + i - 1, expr.begin() + i + 2);
             expr.emplace(expr.begin() + i - 1, ExprElem(tempResult));
         } else i += 2;
     }
 }
 
 double Calculator::calculateExpr(expression expr) {
-    opMap operatorMap({{multiply, Multiply()},
-                       {divide,   Divide()}});
+    opMap operatorMap({{multiply, new Multiply()},
+                       {divide,   new Divide()}});
     reduceExprWithOperators(expr, operatorMap);
 
-    operatorMap = opMap ({{add, Add()},
-                       {substract, Substract()}});
+    operatorMap = opMap ({{add, new Add()},
+                       {substract, new Substract()}});
     reduceExprWithOperators(expr, operatorMap);
     return expr[0].getValue();
 }
@@ -65,7 +72,6 @@ double Calculator::evaluate(std::string expr) {
         parsedExpr = parseExpr(expr);
     }
     catch (std::string e) {
-        std::cout << e << expr << std::endl;
         return 0;
     };
 
