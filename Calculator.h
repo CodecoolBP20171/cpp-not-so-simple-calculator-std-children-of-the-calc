@@ -7,6 +7,7 @@
 #include <map>
 #include <regex>
 #include <string>
+#include <math.h>
 #include "Operators.h"
 #include "ExprElem.h"
 

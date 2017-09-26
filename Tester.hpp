@@ -37,7 +37,7 @@ public:
         TestErroneousFormula_missing_param();
 
         //extras
-        TestNegativeNumbers();
+        TestExtraCases();
 
         evaluateTestOutcomes();
     }
@@ -171,12 +171,14 @@ private:
         checkResult(0, result);
     }
 
-    void TestNegativeNumbers(){
+    void TestExtraCases(){
         Calculator c;
         double result = c.evaluate("3+(-4)");
         checkResult(-1, result);
         result = c.evaluate("2root(-2)");
-        checkResult(-1, result);
+        checkResult(0, result);
+        result = c.evaluate("1/0");
+        checkResult(0, result);
     }
 
     void checkResult(const double expected, const double actual, const double threshold = 0.0d)

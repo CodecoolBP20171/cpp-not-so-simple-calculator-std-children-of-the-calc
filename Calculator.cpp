@@ -124,6 +124,14 @@ double Calculator::evaluate(std::string expr) {
         std::cout << error << std::endl;
         return 0;
     };
-
-    return calculateExpr(parsedExpr);
+    double result = calculateExpr(parsedExpr);
+    if (std::isnan(result)){
+        std::cout << "Negative under root?? Go back to kindergarten! :)" << std::endl;
+        return 0;
+    }
+    if (std::isinf(result)){
+        std::cout << "Dividing by zero?? Nice try! :)" << std::endl;
+        return 0;
+    }
+    return result;
 }
