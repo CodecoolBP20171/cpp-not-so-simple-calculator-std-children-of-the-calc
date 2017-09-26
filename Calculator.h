@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <regex>
+#include <string>
 #include "Operators.h"
 #include "ExprElem.h"
 
@@ -22,6 +23,7 @@ private:
     bool isValidOperator(char oper);
     double calculateExpr(expression expr);
     void reduceExprWithOperators(expression &expr, opMap operatorMap);
+    std::string dealWithParentheses(std::string expr);
 };
 
 

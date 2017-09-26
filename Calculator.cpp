@@ -19,17 +19,36 @@ bool Calculator::isValidOperator(char oper) {
     return validOperators.find(oper) != std::string::npos;
 }
 
+std::string Calculator::dealWithParentheses(std::string expr) {
+    unsigned long openIndex = expr.find('(');
+    while (openIndex != std::string::npos) {
+        int parentCount = 1;
+        long i = openIndex + 1;
+        while (parentCount > 0 && i < expr.size()) {
+            if (expr[i] == '(') ++parentCount;
+            if (expr[i] == ')') --parentCount;
+            ++i;
+        }
+        if (parentCount != 0) throw "Missing closing parentheses";
+        double result = evaluate(expr.substr(openIndex+1, i-openIndex-2));
+        expr.replace(openIndex, i-openIndex, std::to_string(result));
+        openIndex = expr.find('(');
+    }
+    return expr;
+}
+
 expression Calculator::parseExpr(std::string expr) {
+    expr = dealWithParentheses(expr);
     expression parsedExpr;
     unsigned int slowIndex = 0;
     for (unsigned int i = 0; i < expr.size(); ++i) {
         if (!isdigit(expr[i]) && expr[i] != '.') {
-            if (isValidOperator(expr[i])) {
+            if (isValidOperator(expr[i]) && i - slowIndex > 0) {
                 parsedExpr.emplace_back(ExprElem(std::stod(expr.substr(slowIndex, i - slowIndex))));
                 slowIndex = i + 1;
                 parsedExpr.emplace_back(ExprElem(OperType(expr[i])));
             } else {
-                throw "Invalid expression, probably misspelling";
+                throw "Invalid expression, probably misspelling, missing parentheses, or missing operand";
             }
         }
     }
