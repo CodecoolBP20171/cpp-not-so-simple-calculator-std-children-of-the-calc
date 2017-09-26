@@ -18,8 +18,10 @@ typedef std::map <OperType, Operator*> opMap;
 class Calculator {
 public:
     double evaluate(std::string expr);
+    Calculator();
 
 private:
+    std::string validOperators;
     std::string prepareExpression(std::string expr);
     expression parseExpr(std::string expr);
     bool isValidOperator(char oper);

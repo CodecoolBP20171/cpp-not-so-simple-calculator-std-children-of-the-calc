@@ -175,6 +175,8 @@ private:
         Calculator c;
         double result = c.evaluate("3+(-4)");
         checkResult(-1, result);
+        result = c.evaluate("2root(-2)");
+        checkResult(-1, result);
     }
 
     void checkResult(const double expected, const double actual, const double threshold = 0.0d)

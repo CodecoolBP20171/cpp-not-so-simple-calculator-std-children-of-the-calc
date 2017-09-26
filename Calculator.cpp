@@ -1,5 +1,9 @@
 #include "Calculator.h"
 
+Calculator::Calculator() {
+    validOperators = "+-/*r^";
+    validOperators += SIGN_INDICATOR;
+}
 
 std::string Calculator::prepareExpression(std::string expr) {
     expr = std::regex_replace(expr, std::regex("root"), "r");
@@ -13,7 +17,6 @@ std::string Calculator::prepareExpression(std::string expr) {
 }
 
 bool Calculator::isValidOperator(char oper) {
-    const std::string validOperators = "+-*/^r" + SIGN_INDICATOR;
     return validOperators.find(oper) != std::string::npos;
 }
 
@@ -42,9 +45,9 @@ long Calculator::getMatchingParenIndex(std::string &expr, unsigned long openInde
 void Calculator::replaceParenthesesWithResult(std::string &expr, unsigned long openIndex, long i) {
     double result = evaluate(expr.substr(openIndex + 1, i - openIndex - 2));
     if (result < 0)
-        expr.replace(openIndex, i - openIndex, "z" + std::__cxx11::to_string(result).substr(1));
+        expr.replace(openIndex, i - openIndex, "z" + std::to_string(result).substr(1));
     else
-        expr.replace(openIndex, i - openIndex, std::__cxx11::to_string(result));
+        expr.replace(openIndex, i - openIndex, std::to_string(result));
 }
 
 expression Calculator::parseExpr(std::string expr) {
