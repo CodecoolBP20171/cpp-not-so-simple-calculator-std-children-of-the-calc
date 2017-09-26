@@ -17,7 +17,7 @@ public:
         TestMultiplication();
         TestDivision();
         TestFormulaWithSpaces();
-/*
+
         // Level 1
         TestRoot();
         TestPow();
@@ -26,7 +26,7 @@ public:
         TestComplicatedFormula_root();
         TestComplicatedFormula_rootAndPower();
         TestErroneousFormula_rootTypoNoBrackets();
-*/
+
 /*
         // Boss fight
         TestComplicatedFormula_brackets();

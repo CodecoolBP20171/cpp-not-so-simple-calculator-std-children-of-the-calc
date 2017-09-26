@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <regex>
 #include "Operators.h"
 #include "ExprElem.h"
 
@@ -16,7 +17,7 @@ public:
     double evaluate(std::string expr);
 
 private:
-    std::string eliminateSpaces(std::string expr);
+    std::string prepareExpression(std::string expr);
     expression parseExpr(std::string expr);
     bool isValidOperator(char oper);
     double calculateExpr(expression expr);

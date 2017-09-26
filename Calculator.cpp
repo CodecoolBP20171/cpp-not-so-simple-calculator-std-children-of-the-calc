@@ -1,19 +1,22 @@
 #include "Calculator.h"
 
 
-std::string Calculator::eliminateSpaces(std::string expr) {
+std::string Calculator::prepareExpression(std::string expr) {
+
+    expr = std::regex_replace(expr,std::regex("root"),"r");
     std::string newExpr;
     for (char c: expr) {
         if (!isspace(c)) {
             newExpr += c;
         }
     }
+
     return newExpr;
 }
 
 bool Calculator::isValidOperator(char oper) {
-    const std::string validOperators = "+-*/";
-    return validOperators.find(oper) >= 0;
+    const std::string validOperators = "+-*/^r";
+    return validOperators.find(oper) != std::string::npos;
 }
 
 expression Calculator::parseExpr(std::string expr) {
@@ -26,7 +29,7 @@ expression Calculator::parseExpr(std::string expr) {
                 slowIndex = i + 1;
                 parsedExpr.emplace_back(ExprElem(OperType(expr[i])));
             } else {
-                throw "Ejnye no! -->";
+                throw "Invalid expression, probably misspelling";
             }
         }
     }
@@ -54,7 +57,12 @@ void Calculator::reduceExprWithOperators(expression &expr, opMap operatorMap) {
 }
 
 double Calculator::calculateExpr(expression expr) {
-    opMap operatorMap({{multiply, new Multiply()},
+
+    opMap operatorMap({{power, new Power()},
+                       {root,   new Root()}});
+    reduceExprWithOperators(expr, operatorMap);
+
+    operatorMap = opMap ({{multiply, new Multiply()},
                        {divide,   new Divide()}});
     reduceExprWithOperators(expr, operatorMap);
 
@@ -65,13 +73,14 @@ double Calculator::calculateExpr(expression expr) {
 }
 
 double Calculator::evaluate(std::string expr) {
-    expr = eliminateSpaces(expr);
+    expr = prepareExpression(expr);
     expression parsedExpr;
 
     try {
         parsedExpr = parseExpr(expr);
     }
-    catch (std::string e) {
+    catch (const char* error) {
+        std::cout << error << std::endl;
         return 0;
     };
 
