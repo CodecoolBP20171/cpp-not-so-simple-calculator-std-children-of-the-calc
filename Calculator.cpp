@@ -3,6 +3,20 @@
 Calculator::Calculator() {
     validOperators = "+-/*r^";
     validOperators += SIGN_INDICATOR;
+    opmaps = std::vector<opMap>({
+            opMap{{power, new Power()},
+                  {root,  new Root()}},
+            opMap{{multiply, new Multiply()},
+                  {divide,   new Divide()}},
+            opMap{{add,       new Add()},
+                  {substract, new Substract()}}
+    });
+}
+
+Calculator::~Calculator() {
+    for (opMap ops : opmaps) {
+        for (auto op : ops) delete op.second;
+    }
 }
 
 std::string Calculator::prepareExpression(std::string expr) {
@@ -83,7 +97,9 @@ bool Calculator::isNotSign(const std::string &expr, unsigned int i) const { retu
 
 bool Calculator::isCharPartOfNum(char c) const { return isdigit(c) || c == '.'; }
 
-bool Calculator::isOperatorAfterNum(unsigned int slowIndex, unsigned int i) const { return i - slowIndex > 0; }
+bool Calculator::isOperatorAfterNum(unsigned int slowIndex, unsigned int i) const {
+    return i - slowIndex > 0;
+}
 
 void Calculator::reduceExprWithOperators(expression &expr, opMap operatorMap) {
     int i = 1;
@@ -105,18 +121,9 @@ void Calculator::reduceExprWithOperators(expression &expr, opMap operatorMap) {
 }
 
 double Calculator::calculateExpr(expression expr) {
-
-    opMap operatorMap({{power, new Power()},
-                       {root,  new Root()}});
-    reduceExprWithOperators(expr, operatorMap);
-
-    operatorMap = opMap({{multiply, new Multiply()},
-                         {divide,   new Divide()}});
-    reduceExprWithOperators(expr, operatorMap);
-
-    operatorMap = opMap({{add,       new Add()},
-                         {substract, new Substract()}});
-    reduceExprWithOperators(expr, operatorMap);
+    for (const opMap &ops : opmaps) {
+        reduceExprWithOperators(expr, ops);
+    }
     return expr[0].getValue();
 }
 
@@ -133,11 +140,11 @@ double Calculator::evaluate(std::string expr) {
     };
 
     double result = calculateExpr(parsedExpr);
-    if (std::isnan(result)){
+    if (std::isnan(result)) {
         std::cout << "Negative under root?? Go back to kindergarten! :)" << std::endl;
         return 0;
     }
-    if (std::isinf(result)){
+    if (std::isinf(result)) {
         std::cout << "Dividing by zero?? Nice try! :)" << std::endl;
         return 0;
     }

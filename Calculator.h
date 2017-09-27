@@ -21,8 +21,11 @@ public:
     double evaluate(std::string expr);
     Calculator();
 
+    virtual ~Calculator();
+
 private:
     std::string validOperators;
+    std::vector<opMap> opmaps;
     std::string prepareExpression(std::string expr);
     expression parseExpr(std::string expr);
     bool isValidOperator(char oper);
