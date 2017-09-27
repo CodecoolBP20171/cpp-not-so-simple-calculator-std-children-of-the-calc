@@ -177,9 +177,11 @@ private:
         checkResult(-1, result);
         result = c.evaluate("2root(-2)");
         checkResult(0, result);
-        result = c.evaluate("-1/0");
+        result = c.evaluate("5-(3+1/0)");
         checkResult(0, result);
         result = c.evaluate("*1+0");
+        checkResult(0, result);
+        result = c.evaluate("4+*3");
         checkResult(0, result);
     }
 

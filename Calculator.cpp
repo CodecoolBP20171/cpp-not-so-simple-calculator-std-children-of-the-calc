@@ -4,13 +4,13 @@ Calculator::Calculator() {
     validOperators = "+-/*r^";
     validOperators += SIGN_INDICATOR;
     opmaps = std::vector<opMap>({
-            opMap{{power, new Power()},
-                  {root,  new Root()}},
-            opMap{{multiply, new Multiply()},
-                  {divide,   new Divide()}},
-            opMap{{add,       new Add()},
-                  {substract, new Substract()}}
-    });
+                                        opMap{{power, new Power()},
+                                              {root,  new Root()}},
+                                        opMap{{multiply, new Multiply()},
+                                              {divide,   new Divide()}},
+                                        opMap{{add,       new Add()},
+                                              {substract, new Substract()}}
+                                });
 }
 
 Calculator::~Calculator() {
@@ -52,12 +52,18 @@ long Calculator::getMatchingParenIndex(std::string &expr, unsigned long openInde
         if (expr[i] == ')') --parentCount;
         ++i;
     }
-    if (parentCount != 0) throw "Missing closing parentheses";
+    if (parentCount != 0) throw CalculatorException(missingClosingParen, i);
     return i;
 }
 
 void Calculator::replaceParenthesesWithResult(std::string &expr, unsigned long openIndex, long i) {
-    double result = evaluate(expr.substr(openIndex + 1, i - openIndex - 2));
+    double result;
+    try {
+        result = calculate(expr.substr(openIndex + 1, i - openIndex - 2));
+    } catch (CalculatorException &e) {
+        e.changeErrorPlace(openIndex);
+        throw e;
+    }
     if (result < 0)
         expr.replace(openIndex, i - openIndex, SIGN_INDICATOR + std::to_string(result).substr(1));
     else
@@ -81,10 +87,10 @@ expression Calculator::parseExpr(std::string expr) {
                     slowIndex++;
                     sign = -1;
                 } else if (isNotSign(expr, i)) {
-                    throw "Invalid expression, missing operand";
+                    throw CalculatorException(missingOperand, i);
                 }
             } else {
-                throw "Invalid expression, probably misspelling, missing parentheses";
+                throw CalculatorException(spellingOrMissingParen, i);
             }
         }
     }
@@ -113,6 +119,9 @@ void Calculator::reduceExprWithOperators(expression &expr, opMap operatorMap) {
             Operator *operObject = operatorMap[actualOper];
             double tempResult = operObject->doOperation(firstValue, secondValue);
 
+            if (std::isnan(tempResult)) throw CalculatorException(negativeRootOperand, i);
+            if (std::isinf(tempResult)) throw CalculatorException(zeroDiv, i);
+
             //replacing operator and its operands to the partial result
             expr.erase(expr.begin() + i - 1, expr.begin() + i + 2);
             expr.emplace(expr.begin() + i - 1, ExprElem(tempResult));
@@ -127,26 +136,55 @@ double Calculator::calculateExpr(expression expr) {
     return expr[0].getValue();
 }
 
-double Calculator::evaluate(std::string expr) {
+double Calculator::calculate(std::string expr) {
     expr = prepareExpression(expr);
-    expression parsedExpr;
+    expression parsedExpr = parseExpr(expr);
+    return calculateExpr(parsedExpr);
+}
 
+double Calculator::evaluate(std::string expr) {
     try {
-        parsedExpr = parseExpr(expr);
-    }
-    catch (const char *error) {
-        std::cout << error << std::endl;
+        return calculate(expr);
+    } catch (CalculatorException &e) {
+        handleErronousExpression(expr, e);
         return 0;
-    };
+    }
+}
 
-    double result = calculateExpr(parsedExpr);
-    if (std::isnan(result)) {
-        std::cout << "Negative under root?? Go back to kindergarten! :)" << std::endl;
-        return 0;
+void Calculator::handleErronousExpression(const std::string &expr, const CalculatorException &e) const {
+    printBaseMessage(e.getErrorType());
+    std::cout << expr << std::endl;
+    int errorPlace = e.getErrorPlace();
+    for (int i = 0; i < expr.length() && errorPlace > 0; ++i) {
+        if (!isspace(expr[i])) --errorPlace;
+        if (expr[i] == 'r') {
+            if (errorPlace > 1) errorPlace += 3;
+            else break;
+        }
+        std::cout << "-";
     }
-    if (std::isinf(result)) {
-        std::cout << "Dividing by zero?? Nice try! :)" << std::endl;
-        return 0;
+    std::cout << "^" << std::endl;
+}
+
+void Calculator::printBaseMessage(const ErrorType &errorType) const {
+    switch (errorType) {
+        case zeroDiv:
+            std::cout << "Dividing by zero?? Nice try! :)" << std::endl;
+            break;
+        case negativeRootOperand:
+            std::cout << "Negative under root?? Go back to kindergarten! :)" << std::endl;
+            break;
+        case missingClosingParen:
+            std::cout << "Missing closing parentheses" << std::endl;
+            break;
+        case missingOperand:
+            std::cout << "Invalid expression, missing operand" << std::endl;
+            break;
+        case spellingOrMissingParen:
+            std::cout << "Invalid expression, probably misspelling, missing parentheses" << std::endl;
+            break;
+        default:
+            std::cout << "This should never happen!" << std::endl;
+            break;
     }
-    return result;
 }
