@@ -35,6 +35,8 @@ private:
     bool isOperatorAfterNum(unsigned int slowIndex, unsigned int i) const;
 
     bool isCharPartOfNum(char c) const;
+
+    bool isNotSign(const std::string &expr, unsigned int i) const;
 };
 
 

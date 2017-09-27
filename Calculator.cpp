@@ -66,7 +66,7 @@ expression Calculator::parseExpr(std::string expr) {
                 } else if (expr[i] == SIGN_INDICATOR) {
                     slowIndex++;
                     sign = -1;
-                } else if (expr[i] != '-' || i != 0) {
+                } else if (isNotSign(expr, i)) {
                     throw "Invalid expression, missing operand";
                 }
             } else {
@@ -78,6 +78,8 @@ expression Calculator::parseExpr(std::string expr) {
 
     return parsedExpr;
 }
+
+bool Calculator::isNotSign(const std::string &expr, unsigned int i) const { return expr[i] != '-' || i != 0; }
 
 bool Calculator::isCharPartOfNum(char c) const { return isdigit(c) || c == '.'; }
 
