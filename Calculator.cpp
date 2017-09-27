@@ -45,7 +45,7 @@ long Calculator::getMatchingParenIndex(std::string &expr, unsigned long openInde
 void Calculator::replaceParenthesesWithResult(std::string &expr, unsigned long openIndex, long i) {
     double result = evaluate(expr.substr(openIndex + 1, i - openIndex - 2));
     if (result < 0)
-        expr.replace(openIndex, i - openIndex, "z" + std::to_string(result).substr(1));
+        expr.replace(openIndex, i - openIndex, SIGN_INDICATOR + std::to_string(result).substr(1));
     else
         expr.replace(openIndex, i - openIndex, std::to_string(result));
 }
@@ -66,7 +66,7 @@ expression Calculator::parseExpr(std::string expr) {
                 } else if (expr[i] == SIGN_INDICATOR) {
                     slowIndex++;
                     sign = -1;
-                } else if (expr[i] != '-' && i != 0) {
+                } else if (expr[i] != '-' || i != 0) {
                     throw "Invalid expression, missing operand";
                 }
             } else {
