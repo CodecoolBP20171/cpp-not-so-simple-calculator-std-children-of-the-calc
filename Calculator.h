@@ -31,6 +31,10 @@ private:
     std::string dealWithParentheses(std::string expr);
     void replaceParenthesesWithResult(std::string &expr, unsigned long openIndex, long i);
     long getMatchingParenIndex(std::string &expr, unsigned long openIndex);
+
+    bool isOperatorAfterNum(unsigned int slowIndex, unsigned int i) const;
+
+    bool isCharPartOfNum(char c) const;
 };
 
 

@@ -56,9 +56,9 @@ expression Calculator::parseExpr(std::string expr) {
     unsigned int slowIndex = 0;
     int sign = 1;
     for (unsigned int i = 0; i < expr.size(); ++i) {
-        if (!isdigit(expr[i]) && expr[i] != '.') {
+        if (!isCharPartOfNum(expr[i])) {
             if (isValidOperator(expr[i])) {
-                if (i - slowIndex > 0) {
+                if (isOperatorAfterNum(slowIndex, i)) {
                     parsedExpr.emplace_back(ExprElem(sign * std::stod(expr.substr(slowIndex, i - slowIndex))));
                     slowIndex = i + 1;
                     sign = 1;
@@ -79,18 +79,23 @@ expression Calculator::parseExpr(std::string expr) {
     return parsedExpr;
 }
 
+bool Calculator::isCharPartOfNum(char c) const { return isdigit(c) || c == '.'; }
+
+bool Calculator::isOperatorAfterNum(unsigned int slowIndex, unsigned int i) const { return i - slowIndex > 0; }
+
 void Calculator::reduceExprWithOperators(expression &expr, opMap operatorMap) {
     int i = 1;
     while (i < expr.size()) {
-        if (operatorMap.find(expr[i].getOperation()) != operatorMap.end()) {
+        OperType actualOper = expr[i].getOperation();
+        if (operatorMap.find(actualOper) != operatorMap.end()) {
 
-            double tempResult;
-            OperType actualOper = expr[i].getOperation();
+            //calculating the partial result around operator
             double firstValue = expr[i - 1].getValue();
             double secondValue = expr[i + 1].getValue();
             Operator *operObject = operatorMap[actualOper];
-            tempResult = operObject->doOperation(firstValue, secondValue);
+            double tempResult = operObject->doOperation(firstValue, secondValue);
 
+            //replacing operator and its operands to the partial result
             expr.erase(expr.begin() + i - 1, expr.begin() + i + 2);
             expr.emplace(expr.begin() + i - 1, ExprElem(tempResult));
         } else i += 2;
@@ -124,6 +129,7 @@ double Calculator::evaluate(std::string expr) {
         std::cout << error << std::endl;
         return 0;
     };
+
     double result = calculateExpr(parsedExpr);
     if (std::isnan(result)){
         std::cout << "Negative under root?? Go back to kindergarten! :)" << std::endl;
