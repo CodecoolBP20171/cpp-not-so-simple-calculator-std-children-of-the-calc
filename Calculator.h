@@ -14,8 +14,8 @@
 
 const char SIGN_INDICATOR = 'z';
 
-typedef std::vector<ExprElem> expression;
-typedef std::map<OperType, Operator *> opMap;
+using expression = std::vector<ExprElem>;
+using opMap = std::map<OperType, Operator *>;
 
 class Calculator {
 public:

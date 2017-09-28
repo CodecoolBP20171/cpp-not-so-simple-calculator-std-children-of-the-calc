@@ -14,18 +14,13 @@ enum ErrorType {
 class CalculatorException {
 public:
     CalculatorException(ErrorType errorType, int errorPlace);
-
     int getErrorPlace() const;
-
     ErrorType getErrorType() const;
-
     void changeErrorPlace(int offset);
 
-public:
 private:
     int errorPlace;
     ErrorType errorType;
 };
-
 
 #endif //CPP_NOT_SO_SIMPLE_CALCULATOR_STD_CHILDREN_OF_THE_CALC_CALCULATOREXCEPTION_H

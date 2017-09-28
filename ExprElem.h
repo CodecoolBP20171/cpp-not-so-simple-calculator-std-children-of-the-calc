@@ -14,13 +14,9 @@ private:
 
 public:
     ExprElem(double value);
-
     ExprElem(OperType operation);
-
     ElemType getElemType() const;
-
     double getValue() const;
-
     OperType getOperation() const;
 
 };

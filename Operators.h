@@ -6,7 +6,6 @@
 class Operator {
 public:
     virtual double doOperation(double a, double b){};
-
 };
 
 class Add : public Operator {
