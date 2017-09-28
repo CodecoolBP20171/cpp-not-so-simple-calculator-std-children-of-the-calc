@@ -22,10 +22,10 @@ Calculator::~Calculator() {
 std::string Calculator::prepareExpression(std::string expr) {
     expr = std::regex_replace(expr, std::regex("root"), "r");
     std::string newExpr;
-    for (char c: expr) {
-        if (!isspace(c) && c != SIGN_INDICATOR) {
-            newExpr += c;
-        }
+    for (int i =0; i < expr.length(); ++i) {
+        char c = expr[i];
+        if (c == SIGN_INDICATOR) throw CalculatorException(spellingOrMissingParen, i);
+        if (!isspace(c) ) newExpr += c;
     }
     return newExpr;
 }
