@@ -64,10 +64,18 @@ void Calculator::replaceParenthesesWithResult(std::string &expr, unsigned long o
         e.changeErrorPlace(openIndex);
         throw e;
     }
-    if (result < 0)
-        expr.replace(openIndex, i - openIndex, SIGN_INDICATOR + std::to_string(result).substr(1));
-    else
-        expr.replace(openIndex, i - openIndex, std::to_string(result));
+    std::string stringToReplace;
+
+    if (isdigit(expr[openIndex - 1])) {
+        stringToReplace = "*";
+    }
+    if (result < 0) {
+        stringToReplace += SIGN_INDICATOR + std::to_string(result).substr(1);
+    }
+    else {
+        stringToReplace += std::to_string(result);
+    }
+    expr.replace(openIndex, i - openIndex, stringToReplace);
 }
 
 expression Calculator::parseExpr(std::string expr) {
